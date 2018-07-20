@@ -1,6 +1,12 @@
-const express = require("express");
-const app = express();
+const Jimp = require("jimp");
 
-app.get("/", (req, res) => res.send("Hello World!"));
-
-app.listen(3000, () => console.log("Example app listening on port 3000!"));
+Jimp.read("image.jpg")
+  .then(function(image) {
+    return image
+      .blur(150)
+      .quality(100)
+      .write("image-blur.jpg");
+  })
+  .catch(function(err) {
+    console.log(err);
+  });
