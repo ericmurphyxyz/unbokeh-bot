@@ -1,4 +1,6 @@
 module.exports = {
-  applicationId: "process.env.APPLICATION_ID",
-  secret: "process.env.SECRET"
+  unsplashApi: "process.env.UNSPLASH_API",
+  unsplashSecret: "process.env.UNSPLASH_SECRET",
+  firebaseApi: "process.env.FIREBASE_API",
+  firebaseSenderId: "process.env.FIREBASE_SENDER_ID"
 };
