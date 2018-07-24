@@ -36,24 +36,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const bucket = admin.storage().bucket();
 
-//upload to firebase
-const upload = url => {
-  const filename = `images/${url}.jpg`;
-
-  storage
-    .bucket(bucketName)
-    .upload(filename)
-    .then(() => {
-      console.log(`${filename} uploaded to ${bucketName}.`);
-    })
-    .catch(err => {
-      console.error("ERROR:", err);
-    });
-};
-
 //bokeh-fy images
 const blurImage = (url, slug) => {
-  Jimp.read(url)
+  return Jimp.read(url)
     .then(function(image) {
       return image
         .blur(150)
@@ -66,6 +51,21 @@ const blurImage = (url, slug) => {
     });
 };
 
+//upload to firebase
+const upload = slug => {
+  const filename = `images/${slug}.jpg`;
+
+  storage
+    .bucket(bucketName)
+    .upload(filename)
+    .then(() => {
+      console.log(`${filename} uploaded to ${bucketName}.`);
+    })
+    .catch(err => {
+      console.error("ERROR:", err);
+    });
+};
+
 //unsplash setup
 const unsplash = new Unsplash({
   applicationId: keys.unsplashApi,
@@ -74,19 +74,21 @@ const unsplash = new Unsplash({
 });
 
 //unsplash api
-// unsplash.photos
-//   .getRandomPhoto({ collections: ["1065396", "1065412"] })
-//   .then(res => res.json())
-//   .then(json => {
-//     console.log(json);
-//     const url = json.urls.full;
-//     const author = json.user.name;
-//     const attrUrl = `${
-//       json.links.html
-//     }?utm_source=your_app_name&utm_medium=referral`;
-//     const slug = `${json.user.username}-${json.id}-unbokeh`.toLowerCase();
+unsplash.photos
+  .getRandomPhoto({ collections: ["1065396", "1065412"] })
+  .then(res => res.json())
+  .then(json => {
+    console.log(json);
+    const url = json.urls.full;
+    const author = json.user.name;
+    const attrUrl = `${
+      json.links.html
+    }?utm_source=your_app_name&utm_medium=referral`;
+    const slug = `${json.user.username}-${json.id}-unbokeh`.toLowerCase();
 
-//     blurImage(url, slug);
-//   });
-
-upload(`benediktmatern-cgewazqam1w-unbokeh`);
+    async function processData() {
+      await blurImage(url, slug);
+      upload(slug);
+    }
+    processData();
+  });
