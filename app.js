@@ -3,30 +3,33 @@ const Unsplash = require("unsplash-js").default;
 const Storage = require("@google-cloud/storage");
 const firebase = require("firebase");
 const admin = require("firebase-admin");
+require("firebase/firestore");
+//node fetch polyfill
+require("es6-promise").polyfill();
+require("isomorphic-fetch");
 
 const serviceAccount = require("./sdkKey.json");
 
+//api keys
+const keys = require("./keys");
+
+//firebase init
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://unbokeh.firebaseio.com",
   storageBucket: "unbokeh.appspot.com"
 });
 
+//firebase vars
+const db = admin.firestore();
 const storage = new Storage({
   projectId: "unbokeh"
 });
-
 const bucketName = "unbokeh.appspot.com";
-
-//node fetch polyfill
-require("es6-promise").polyfill();
-require("isomorphic-fetch");
-
-//api keys
-const keys = require("./keys");
 
 //Firebase api setup
 const firebaseConfig = {
+  projectId: "unbokeh",
   apiKey: keys.firebaseApi,
   authDomain: "unbokeh.firebaseapp.com",
   databaseURL: "https://unbokeh.firebaseio.com",
@@ -34,7 +37,11 @@ const firebaseConfig = {
   messagingSenderId: keys.firebaseSenderId
 };
 firebase.initializeApp(firebaseConfig);
-const bucket = admin.storage().bucket();
+
+//firestore setup
+const firestore = firebase.firestore();
+const settings = { timestampsInSnapshots: true };
+firestore.settings(settings);
 
 //bokeh-fy images
 const blurImage = (url, slug) => {
@@ -58,12 +65,34 @@ const upload = slug => {
   storage
     .bucket(bucketName)
     .upload(filename)
-    .then(() => {
+    .then(filename => {
       console.log(`${filename} uploaded to ${bucketName}.`);
+      getPublicUrl(filename);
     })
     .catch(err => {
       console.error("ERROR:", err);
     });
+};
+
+const getPublicUrl = filename => {
+  storage
+    .bucket(bucketName)
+    .file(filename)
+    .getSignedUrl({
+      action: "read",
+      expires: "03-09-2491"
+    })
+    .then(signedUrls => {
+      console.log(signedUrls[0]);
+    });
+};
+
+const uploadMeta = slug => {
+  const docRef = db.collection("images").doc(slug);
+  const setImage = docRef.set({
+    author: author,
+    attrUrl: attrUrl
+  });
 };
 
 //unsplash setup
@@ -88,7 +117,9 @@ unsplash.photos
 
     async function processData() {
       await blurImage(url, slug);
-      upload(slug);
+      await upload(slug);
+      // uploadMeta();
     }
+
     processData();
   });
