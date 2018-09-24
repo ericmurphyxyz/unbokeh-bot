@@ -1,9 +1,7 @@
 const Jimp = require('jimp')
 const Unsplash = require('unsplash-js').default
-//node fetch polyfill
-require('es6-promise').polyfill()
+const fs = require('fs')
 require('isomorphic-fetch')
-var fs = require('fs')
 
 //api keys
 const keys = require('./keys')
@@ -14,7 +12,7 @@ const saveMetadata = (author, attrUrl, slug) => {
   const json = JSON.parse(fs.readFileSync(database))
   json.push(...metadata)
 
-  fs.writeFile(database, JSON.stringify(json))
+  fs.writeFile(database, JSON.stringify(json), err => {})
 }
 
 //bokeh-fy images
