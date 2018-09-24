@@ -7,6 +7,7 @@ require('isomorphic-fetch')
 const keys = require('./keys')
 
 const saveMetadata = (author, attrUrl, slug) => {
+  //push all this metadata into a json file, you feeling me
   const database = 'client/metadata.json'
   const metadata = [{ author, attrUrl, url: `./images/${slug}.jpg` }]
   const json = JSON.parse(fs.readFileSync(database))
