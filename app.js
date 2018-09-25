@@ -9,7 +9,7 @@ const keys = require('./keys')
 const saveMetadata = (author, attrUrl, slug) => {
   //push all this metadata into a json file, you feeling me
   const database = 'client/src/data/metadata.json'
-  const metadata = [{ author, attrUrl, url: `./images/${slug}.jpg` }]
+  const metadata = [{ author, attrUrl, path: `./images/${slug}.jpg` }]
   const json = JSON.parse(fs.readFileSync(database))
   json.push(...metadata)
 
