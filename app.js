@@ -39,13 +39,12 @@ const unsplash = new Unsplash({
 })
 
 //unsplash api
-getPhoto = id => {
-  unsplash.photos
+async function downloadPhoto(id) {
+  await unsplash.photos
     .getPhoto(id)
-    .then(res => {
-      res.json()
-    })
+    .then(res => res.json())
     .then(json => {
+      console.log('1')
       const url = json.urls.full
       const author = json.user.name
       const attrUrl = `${
@@ -59,10 +58,10 @@ getPhoto = id => {
       // blur the damn image!
       blurImage(url, slug)
     })
-    .catch(err => console.log(err))
 }
 
 const photos = [
+  // 'Ceuh97A6OYM',
   // '1Z2niiBPg5A',
   // 'u3qeLOkt8wM',
   // 'CSpjU6hYo_0',
@@ -88,27 +87,27 @@ const photos = [
   // 'o1TJ8uAI1Xc',
   // 'G2m_nnChw8M',
   // '23NOAD502Xw',
-  // 'lUtPqjz5D5k',
-  // 'vr_9IBUp9zg',
-  // 'xmGeZL8gims',
-  // 'RatxiOcaMZo',
-  // 'XDPk8ndzNho',
-  // 'cGViI7fgmGE',
-  // 'z2icBh4A9i0',
-  // 'IqW8saasx0E',
-  // 'muMR2IhCbZ0',
-  // 'UAmOAYVL4PU',
-  // '1i6mrD_t9gA',
-  // 'Q_oXnSLxlSw',
-  // 'G0miZ5OYaXI',
-  // 'G0miZ5OYaXI',
-  // 'TznjqhCHR9g',
-  // 'Xa2ICcPqUew',
-  // 'chc-oAL0gBU',
-  // 'MKm8H6g5IeA',
-  // 'yRIBEupK5j0',
-  // 'VgR1-Z9kDNI',
-  // 'aHetdmuNoO4',
+  'lUtPqjz5D5k',
+  'vr_9IBUp9zg',
+  'xmGeZL8gims',
+  'RatxiOcaMZo',
+  'XDPk8ndzNho',
+  'cGViI7fgmGE',
+  'z2icBh4A9i0',
+  'IqW8saasx0E',
+  'muMR2IhCbZ0',
+  'UAmOAYVL4PU',
+  '1i6mrD_t9gA',
+  'Q_oXnSLxlSw',
+  'G0miZ5OYaXI',
+  'G0miZ5OYaXI',
+  'TznjqhCHR9g',
+  'Xa2ICcPqUew',
+  'chc-oAL0gBU',
+  'MKm8H6g5IeA',
+  'yRIBEupK5j0',
+  'VgR1-Z9kDNI',
+  'aHetdmuNoO4',
   // 'NQ-Avc_MjLk',
   // '3iaV4wNnzks',
   // 'GJrtD-cvtgw',
@@ -141,7 +140,7 @@ const photos = [
   // '-g7axSVst6Y',
   // 'cYrMQA7a3Wc',
   // '3igHRe7QTdg',
-  '78A265wPiO4',
+  // '78A265wPiO4',
   // '_hpk_92Crhs',
   // '62V7ntlKgL8',
   // 'dKJXkKCF2D8',
@@ -149,4 +148,11 @@ const photos = [
   // '__U6tHlaapI',
 ]
 
-photos.forEach(photo => getPhoto(photo))
+async function downloadPhotos(array) {
+  for (const photo of array) {
+    await downloadPhoto(photo)
+  }
+  console.log('done!')
+}
+
+downloadPhotos(photos)
