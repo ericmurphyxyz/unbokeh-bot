@@ -8,7 +8,7 @@ const keys = require('./keys')
 
 const saveMetadata = (author, attrUrl, slug) => {
   //push all this metadata into a json file, you feeling me
-  const database = 'client/src/data/metadata.json'
+  const database = '../unbokeh-client/src/data/metadata.json'
   const metadata = [{ author, attrUrl, path: `./images/${slug}.jpg` }]
   const json = JSON.parse(fs.readFileSync(database))
   json.push(...metadata)
@@ -24,7 +24,7 @@ const blurImage = (url, slug) => {
         .blur(150)
         .quality(80)
         .scaleToFit(2560, 2560)
-        .write(`client/src/data/images/${slug}.jpg`)
+        .write(`../unbokeh-client/src/data/images/${slug}.jpg`)
     })
     .catch(err => {
       console.log(err)
